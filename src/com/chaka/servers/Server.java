@@ -55,8 +55,27 @@ public class Server {
         return adjacentElementsIndexes;
     }
 
-    public int updateAllServers(int[] array1, int[] array2, int[] array3) {
+    private int[] mergeArrays(int[] array1, int[] array2, int[] array3) {
+        int firstArrayLength = array1.length;
+        int secondArrayLength = array2.length;
+        int thirdArrayLength = array3.length;
 
+        int[] mergedArray = new int[firstArrayLength + secondArrayLength + thirdArrayLength];
+
+        System.arraycopy(array1, 0, mergedArray, 0, firstArrayLength);
+        System.arraycopy(array2, 0, mergedArray, firstArrayLength, secondArrayLength);
+        System.arraycopy(array3, 0, mergedArray, firstArrayLength + secondArrayLength, thirdArrayLength);
+
+        System.out.println(Arrays.toString(mergedArray));
+        return mergedArray;
+    }
+
+    public int updateAllServers(int[] array1, int[] array2, int[] array3) {
+        int numberOfDays = 0;
+
+
+
+        return numberOfDays;
     }
 
     public Server() {
@@ -65,5 +84,8 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
+        int[] myArray = {13, 14, 15};
+
+        server.mergeArrays(myArray, myArray, myArray);
     }
 }
