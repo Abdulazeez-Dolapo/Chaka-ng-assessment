@@ -1,10 +1,7 @@
 package com.chaka.stockTable;
 
-//import java.util.HashMap;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.lang.*;
-//import java.util.UUID;
 
 public class StockTable {
     public HashMap<Integer, TableData> stockTable;
