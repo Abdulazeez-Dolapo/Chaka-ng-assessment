@@ -57,20 +57,42 @@ public class StockTable {
         return temp;
     }
 
-    public HashMap<Integer, TableData> filterTable(String filterKey, String filterValue) {
-        // Validate filterKey and filterValue values (check if empty)
+    public HashMap<Integer, TableData> filterTable(String filterBy, String filterValue) {
+        // Validate filterBy and filterValue values (check if empty)
+        // Validate filterBy to be either "userId" or "merchantId"
         // Validate filterValue to be either "asc" or "desc"
 
-        HashMap<Integer, TableData> sorted = sortByDate(this.stockTable, filterValue);
-        return sorted;
+        // initialize a new HashMap
+        HashMap<Integer, TableData> newMap = new HashMap<>();
+
+        // iterate through stockTable to get values that correspond with filterValue
+        for (Map.Entry<Integer, TableData> entry : this.stockTable.entrySet()) {
+            if(filterBy.equals("userId")) {
+                if(entry.getValue().getUserId().equals(filterValue)) {
+                    newMap.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            if(filterBy.equals("merchantId")) {
+                System.out.println(entry.getValue().getMerchantId());
+                if(entry.getValue().getMerchantId().equals(filterValue)) {
+                    newMap.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        // sort the new hashmap by date
+        HashMap<Integer, TableData> sortedData = this.sortByDate(newMap, "desc");
+
+        return sortedData;
     }
 
     public static void main(String[] args) {
         StockTable stockTable = new StockTable();
-        stockTable.stored("merchantId", "userId");
+        stockTable.stored("merchantId", "userId3");
         stockTable.stored("merchantId2", "userId2");
-        stockTable.stored("merchantId3", "userId3");
-        System.out.println(stockTable.filterTable("fg", "desc"));
+        stockTable.stored("merchantId", "userId3");
+        System.out.println(stockTable.filterTable("userId", "userId3"));
     }
 }
 
