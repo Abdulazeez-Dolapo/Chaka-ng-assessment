@@ -1,6 +1,8 @@
 package com.chaka.servers;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * NOTES:
@@ -36,7 +38,6 @@ import java.util.*;
  */
 
 public class Server {
-    public int numberOfDays;
     private HashMap<Integer, int[]> adjacentElementsIndexes;
 
     private HashMap<Integer, int[]> getIndexesOfAdjacentElements() {
@@ -55,25 +56,64 @@ public class Server {
         return adjacentElementsIndexes;
     }
 
-    private int[] mergeArrays(int[] array1, int[] array2, int[] array3) {
-        int firstArrayLength = array1.length;
-        int secondArrayLength = array2.length;
-        int thirdArrayLength = array3.length;
+    private Integer[] mergeArrays(Integer[] array1, Integer[] array2, Integer[] array3) {
+        Integer firstArrayLength = array1.length;
+        Integer secondArrayLength = array2.length;
+        Integer thirdArrayLength = array3.length;
 
-        int[] mergedArray = new int[firstArrayLength + secondArrayLength + thirdArrayLength];
+        Integer[] mergedArray = new Integer[firstArrayLength + secondArrayLength + thirdArrayLength];
 
         System.arraycopy(array1, 0, mergedArray, 0, firstArrayLength);
         System.arraycopy(array2, 0, mergedArray, firstArrayLength, secondArrayLength);
         System.arraycopy(array3, 0, mergedArray, firstArrayLength + secondArrayLength, thirdArrayLength);
 
-        System.out.println(Arrays.toString(mergedArray));
         return mergedArray;
     }
 
-    public int updateAllServers(int[] array1, int[] array2, int[] array3) {
-        int numberOfDays = 0;
+    public boolean allServersUpdated(Integer[] array) {
+        return array != null && Arrays.stream(array).allMatch(item -> item == 1);
+    }
 
+    public Integer updateAllServers(Integer[] array1, Integer[] array2, Integer[] array3) {
+        Integer numberOfDays = 0;
+        Integer [] mergedArray = this.mergeArrays(array1, array2, array3);
 
+        while (true) {
+            // Check if every element has an updated state of 1
+            boolean allServersUpdated = this.allServersUpdated(mergedArray);
+
+            if(!allServersUpdated) {
+                AtomicInteger index = new AtomicInteger();
+                Stream<Integer> myNewStream = Arrays.stream(mergedArray).map(element -> {
+                    // Get the indexes of all adjacent elements for the current element
+                    int i = index.getAndIncrement();
+                    int[] adjacentElements = this.adjacentElementsIndexes.get(i);
+
+                    // check if any of the adjacent elements has updated state (1)
+                    for (int j = 0; j < adjacentElements.length; j++) {
+                        boolean containsUpdatedState = mergedArray[adjacentElements[j]] == 1;
+
+                        if (containsUpdatedState) {
+                            element = 1;
+                            break;
+                        }
+                    }
+
+                    return element;
+                });
+
+                Integer[] myNewArray = myNewStream.toArray(Integer[]::new);
+
+                // Update the merged array using the new array created
+                for (int i = 0; i < myNewArray.length; i++) {
+                    mergedArray[i] = myNewArray[i];
+                }
+
+                numberOfDays++;
+            } else {
+                break;
+            }
+        }
 
         return numberOfDays;
     }
@@ -84,8 +124,5 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
-        int[] myArray = {13, 14, 15};
-
-        server.mergeArrays(myArray, myArray, myArray);
     }
 }
