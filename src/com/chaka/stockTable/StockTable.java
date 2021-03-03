@@ -29,7 +29,22 @@ public class StockTable {
         this.stockTable = new HashMap<>();
     }
 
+    private void displayToTerminal(HashMap<Integer, TableData> sortedData) {
+        for (Object key : sortedData.keySet()) {
+            System.out.println("==============================");
+            System.out.println(sortedData.get(key).getMerchantId());
+            System.out.println(sortedData.get(key).getUserId());
+            System.out.println(sortedData.get(key).getCreatedAt());
+            System.out.println("==============================");
+        }
+    }
+
     private static HashMap<Integer, TableData> sortByDate(HashMap<Integer, TableData> dataToSort, String orderBy) {
+        // Validate orderBy to be either "asc" or "desc"
+        if(!orderBy.equals("asc") && !orderBy.equals("desc")) {
+            throw new IllegalArgumentException("orderBy should be asc or desc");
+        }
+
         // Create a list from elements of HashMap
         List<Map.Entry<Integer, TableData> > list =
                 new LinkedList<Map.Entry<Integer, TableData> >(dataToSort.entrySet());
@@ -56,8 +71,14 @@ public class StockTable {
 
     public HashMap<Integer, TableData> filterTable(String filterBy, String filterValue) {
         // Validate filterBy and filterValue values (check if empty)
+        if(filterBy.isEmpty() || filterValue.isEmpty()) {
+            throw new IllegalArgumentException("Please enter a value for filterBy or filterValue");
+        }
+
         // Validate filterBy to be either "userId" or "merchantId"
-        // Validate filterValue to be either "asc" or "desc"
+        if(!filterBy.equals("userId") && !filterBy.equals("merchantId")) {
+            throw new IllegalArgumentException("filterBy should be either userId or merchantId");
+        }
 
         // initialize a new HashMap
         HashMap<Integer, TableData> newMap = new HashMap<>();
@@ -81,6 +102,10 @@ public class StockTable {
         // sort the new hashmap by date
         HashMap<Integer, TableData> sortedData = this.sortByDate(newMap, "desc");
 
+        // Display the sorted data on terminal
+        // It is not totally necessary, I just wanted a way to show the data in the class on the terminal
+        this.displayToTerminal(sortedData);
+
         return sortedData;
     }
 
@@ -89,6 +114,7 @@ public class StockTable {
         stockTable.stored("merchantId", "userId3");
         stockTable.stored("merchantId2", "userId2");
         stockTable.stored("merchantId", "userId3");
+
         System.out.println(stockTable.filterTable("userId", "userId3"));
     }
 }

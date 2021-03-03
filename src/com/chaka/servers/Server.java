@@ -70,7 +70,7 @@ public class Server {
         return mergedArray;
     }
 
-    public boolean allServersUpdated(Integer[] array) {
+    private boolean allServersUpdated(Integer[] array) {
         return array != null && Arrays.stream(array).allMatch(item -> item == 1);
     }
 
@@ -124,5 +124,10 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
+        Integer[] myArray = {1, 0, 0};
+        Integer[] myArray2 = {0, 0, 0};
+        Integer[] myArray3 = {0, 0, 1};
+
+        System.out.println(server.updateAllServers(myArray, myArray2, myArray3));
     }
 }
